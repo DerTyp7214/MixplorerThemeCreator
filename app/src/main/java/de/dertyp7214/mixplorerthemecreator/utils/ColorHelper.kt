@@ -8,6 +8,8 @@ import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.appcompat.view.ContextThemeWrapper
+import de.dertyp7214.mixplorerthemecreator.core.changeHue
+import de.dertyp7214.mixplorerthemecreator.core.changeSaturation
 import de.dertyp7214.mixplorerthemecreator.core.getAttr
 
 @Suppress("unused", "MemberVisibilityCanBePrivate")
@@ -74,15 +76,18 @@ class ColorHelper(
     )
 
     private val colorGroupBackgroundVariant = listOf(
-        "tint_tab_indicator",
         "text_bar_tab_default",
         "highlight_grid_item",
         "highlight_popup_list_item",
-        "highlight_popup_controls",
         "text_popup_primary_inverse",
         "text_popup_secondary_inverse",
-        "tint_grid_item",
+        "tint_grid_item"
+    )
+
+    private val colorGroupControl = listOf(
+        "tint_tab_indicator",
         "tint_notification_buttons",
+        "highlight_popup_controls",
         "tint_popup_controls",
         "tint_progress_track"
     )
@@ -119,8 +124,20 @@ class ColorHelper(
     fun setBackgroundColorVariant(@ColorInt color: Int) =
         colorGroupBackgroundVariant.forEach { setColor(it, color) }
 
+    fun setControlColor(@ColorInt color: Int) =
+        colorGroupControl.forEach { setColor(it, color) }
+
     fun setAccentColor(@ColorInt color: Int) =
         colorGroupAccent.forEach { setColor(it, color) }
+
+    fun setSyntaxColor(@ColorInt primary: Int, @ColorInt tertiary: Int) {
+        setSyntaxAttrColor(primary.changeHue(40))
+        setSyntaxAttrValueColor(tertiary)
+        setSyntaxCommentColor(primary.changeSaturation(.1f))
+        setSyntaxKeywordColor(primary)
+        setSyntaxStringColor(tertiary)
+        setSyntaxSymbolColor(primary.changeHue(-60).changeSaturation(.6f))
+    }
 
     fun setSyntaxAttrColor(@ColorInt color: Int) = setColor(syntaxAttr, color)
     fun setSyntaxAttrValueColor(@ColorInt color: Int) = setColor(syntaxAttrValue, color)

@@ -1,6 +1,8 @@
 package de.dertyp7214.mixplorerthemecreator
 
 import android.content.res.ColorStateList
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.RippleDrawable
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
@@ -50,7 +52,13 @@ class MainActivity : AppCompatActivity() {
         colorChangeListeners.forEach { it() }
         setColor()
 
+        themeUtils.clean()
+
         themeUtils.exportXml()
+        themeUtils.exportFont()
+        themeUtils.exportIcons()
+
+        themeUtils.packTheme()
     }
 
     private val htmlPreview: View.() -> Unit = {
@@ -130,12 +138,32 @@ class MainActivity : AppCompatActivity() {
             findViewById(R.id.iconFile),
             findViewById(R.id.iconArchive)
         )
+        val groupC: List<ViewGroup> = listOf(
+            findViewById(R.id.folder),
+            findViewById(R.id.file),
+            findViewById(R.id.archive)
+        )
+
 
         fun changeColors() {
             val tintBarMainIcons = colorHelper.getColor("tint_bar_main_icons")
+            val rippleColor = colorHelper.getColor("tint_grid_item")
+            val backgroundColor = colorHelper.getColor("bg_page")
+
+            val rippleDrawable = {
+                RippleDrawable(
+                    ColorStateList(
+                        arrayOf(intArrayOf()),
+                        intArrayOf(rippleColor)
+                    ),
+                    ColorDrawable(backgroundColor),
+                    null
+                )
+            }
 
             groupA.forEach { it.setTextColor(tintBarMainIcons) }
             groupB.forEach { it.imageTintList = ColorStateList.valueOf(tintBarMainIcons) }
+            groupC.forEach { it.background = rippleDrawable() }
         }
 
         colorChangeListeners.add(::changeColors)
@@ -145,10 +173,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun setColor() {
         colorHelper.setBackgroundColor(getAttr(com.google.android.material.R.attr.colorSurface))
-        colorHelper.setSyntaxKeywordColor(
-            getAttr(com.google.android.material.R.attr.colorPrimary).changeSaturation(1.5f)
+        colorHelper.setBackgroundColorVariant(getAttr(com.google.android.material.R.attr.colorSurfaceVariant))
+        colorHelper.setControlColor(
+            getAttr(com.google.android.material.R.attr.colorPrimaryContainer).changeSaturation(.7f)
         )
-        colorHelper.setSyntaxStringColor(
+        colorHelper.setSyntaxColor(
+            getAttr(com.google.android.material.R.attr.colorPrimary).changeSaturation(1.5f),
             getAttr(com.google.android.material.R.attr.colorTertiary).changeSaturation(2f)
         )
         colorHelper.setTextColorMain(getAttr(com.google.android.material.R.attr.colorOnSurface))

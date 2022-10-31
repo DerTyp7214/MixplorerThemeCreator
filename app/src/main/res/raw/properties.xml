@@ -24,7 +24,7 @@
 	<entry key="font_editor"></entry>
 	<entry key="font_hex"></entry>
 	-->
-    <entry key="font_editor">fonts/RobotoMono-Regular.ttf</entry>
+    <entry key="font_editor">fonts/roboto_mono_regular.ttf</entry>
 
 	<!-- Statusbar Color -->
 	<entry key="tint_status_bar">#0D0913</entry>

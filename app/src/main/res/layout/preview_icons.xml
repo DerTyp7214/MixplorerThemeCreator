@@ -13,8 +13,10 @@
         android:orientation="vertical">
 
         <LinearLayout
+            android:id="@+id/folder"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:clickable="true"
             android:orientation="horizontal"
             android:padding="8dp">
 
@@ -53,8 +55,10 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/file"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:clickable="true"
             android:orientation="horizontal"
             android:padding="8dp">
 
@@ -93,8 +97,10 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/archive"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:clickable="true"
             android:orientation="horizontal"
             android:padding="8dp">
 
