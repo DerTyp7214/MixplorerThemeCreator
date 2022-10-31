@@ -30,7 +30,7 @@ class ThemeUtils(private val activity: FragmentActivity) {
 
         val zipFile = File(context.filesDir, "theme.mit")
 
-        ZipHelper.zip(listOf(themePath), zipFile, root = themePath.absolutePath)
+        ZipHelper.zip(listOf(themePath), zipFile)
 
         return if (zipFile.exists()) zipFile else null
     }

@@ -12,13 +12,15 @@ import java.util.zip.ZipOutputStream
 @Suppress("LocalVariableName")
 object ZipHelper {
     private const val buffer = 80000
-    fun zip(files: List<File>, zipFile: File, root: String = "") {
-        val _files = arrayListOf<String>()
-        fun addFiles(file: File) {
-            if (!file.isDirectory) _files.add(file.absolutePath)
-            else file.listFiles()?.forEach(::addFiles)
+    fun zip(files: List<File>, zipFile: File) {
+        val _files = arrayListOf<Pair<String, String>>()
+        fun addFiles(file: File, root: String) {
+            if (!file.isDirectory) _files.add(Pair(file.absolutePath, root))
+            else file.listFiles()?.forEach { addFiles(it, root) }
         }
-        files.forEach(::addFiles)
+        files.forEach {
+            addFiles(it, it.absolutePath)
+        }
         try {
             var origin: BufferedInputStream?
             val dest = FileOutputStream(zipFile)
@@ -29,10 +31,13 @@ object ZipHelper {
             )
             val data = ByteArray(buffer)
             for (i in _files.indices) {
-                val fi = FileInputStream(_files[i])
+                val fi = FileInputStream(_files[i].first)
                 origin = BufferedInputStream(fi, buffer)
                 val entry =
-                    ZipEntry(_files[i].removePrefix(root).removePrefix("\\").removePrefix("/"))
+                    ZipEntry(
+                        _files[i].first.removePrefix(_files[i].second).removePrefix("\\")
+                            .removePrefix("/")
+                    )
                 out.putNextEntry(entry)
                 var count: Int
                 while (origin.read(data, 0, buffer).also { count = it } != -1) {
