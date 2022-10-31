@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<properties>
+	<entry key="title">You_theme</entry>
+	<entry key="author">RKBDI</entry>
+	
+	<!-- General -->
+    <entry key="density">400</entry>
+	<entry key="light_status_bar">false</entry> <!-- true for dark status bar icons -->
+	<entry key="thumb_size">120</entry> <!-- dp -->
+	<entry key="thumb_quality">80</entry> <!-- Percent -->
+	<entry key="wallpaper">false</entry>
+	<entry key="translucent_system_bars">true</entry>
+	<entry key="background_dim">100</entry> <!-- (0~100) -->
+	<entry key="uppercase_buttons">true</entry>
+	<entry key="menu_overlap_anchor">false</entry>
+	<!-- ICS ? false : true <entry key="square_icons">false</entry>-->
+
+	<!-- Fonts -->
+	<!--
+	<entry key="font_primary"></entry>
+	<entry key="font_secondary"></entry>
+	<entry key="font_title"></entry>
+	<entry key="font_popup"></entry>
+	<entry key="font_editor"></entry>
+	<entry key="font_hex"></entry>
+	-->
+    <entry key="font_editor">fonts/RobotoMono-Regular.ttf</entry>
+
+	<!-- Statusbar Color -->
+	<entry key="tint_status_bar">#0D0913</entry>
+
+	<!-- Navigation Bar Color -->
+	<entry key="tint_navigation_bar">#0D0913</entry>
+
+	<!-- Action Bar Background Color -->
+	<entry key="bg_bar_action">#0D0913</entry>
+
+	<!-- Main Bar Background Color -->
+	<entry key="bg_bar_main">#0D0913</entry>
+	<entry key="dialog_footer_right">#0D0913</entry>
+
+	<!-- Main Bar Text -->
+	<entry key="text_bar_main_primary">#DCD1ED</entry>
+	<entry key="text_bar_main_secondary">#362D43</entry>
+
+	<!-- ToolBar Background Color -->
+	<entry key="bg_bar_tools">#0D0913</entry>
+
+	<!-- Main Background Color -->
+	<entry key="bg_page">#0D0913</entry>
+
+	<!-- Tab Background Color -->
+	<entry key="bg_bar_tab">#0D0913</entry>
+
+	<!-- Tab Indicator Color -->
+	<entry key="tint_tab_indicator">#261720</entry>
+	<entry key="tint_tab_indicator_selected">#FF9798</entry>
+
+	<!-- Tab Text Color -->
+	<entry key="text_bar_tab_default">#261720</entry>
+	<entry key="text_bar_tab_selected">#FF9798</entry>
+
+	<!-- Highlights -->
+	<entry key="highlight_bar_action_buttons">#DCD1ED</entry>
+	<entry key="highlight_bar_main_buttons">#DCD1ED</entry>
+	<entry key="highlight_bar_tab_buttons">#DCD1ED</entry>
+	<entry key="highlight_bar_tool_buttons">#DCD1ED</entry>
+	<entry key="highlight_grid_item">#261720</entry>
+	<entry key="highlight_popup_list_item">#261720</entry>
+	<entry key="highlight_popup_controls">#261720</entry>
+
+	<!-- Syntax Colors -->
+	<entry key="syntax_attr">#C201A9</entry>
+	<entry key="syntax_attr_value">#FF9798</entry>
+	<entry key="syntax_comment">#71828A</entry>
+	<entry key="syntax_keyword">#A966FE</entry>
+	<entry key="syntax_string">#FF9798</entry>
+	<entry key="syntax_symbol">#468FC2</entry>
+
+	<!-- Link Text -->
+	<entry key="text_link">#FF9798</entry>
+	<entry key="text_link_pressed">#DCD1ED</entry>
+
+	<!-- Button Text -->
+	<entry key="text_button">#FF9798</entry>
+	<entry key="text_button_inverse">#FF9798</entry>
+    <entry key="text_popup_primary">#0D0913</entry>
+    <entry key="text_popup_primary_inverse">#261720</entry>
+    <entry key="text_popup_secondary">#0D0913</entry>
+    <entry key="text_popup_secondary_inverse">#261720</entry>
+
+	<!-- Editor Text -->
+	<entry key="text_editor_foreground">#DCD1ED</entry>
+
+	<!-- Edit Box Text -->
+	<entry key="text_edit_box">#DCD1ED</entry>
+	<entry key="text_edit_box_hint">#DCD1ED</entry>
+	<entry key="text_edit_selection_background">#362D43</entry>
+	<entry key="text_edit_selection_foreground">#DCD1ED</entry>
+	<entry key="text_filter_box">#DCD1ED</entry>
+	<entry key="text_filter_box_hint">#362D43</entry>
+
+	<!-- Grid Item Text-->
+	<entry key="text_grid_primary">#DCD1ED</entry>
+	<entry key="text_grid_primary_inverse">#DCD1ED</entry>
+	<entry key="text_grid_secondary">#362D43</entry>
+	<entry key="text_grid_secondary_inverse">#DCD1ED</entry>
+
+	<!-- Popup Text -->
+	<entry key="text_popup_header">#DCD1ED</entry>
+	<entry key="text_popup_primary">#DCD1ED</entry>
+	<entry key="text_popup_primary_inverse">#DCD1ED</entry>
+	<entry key="text_popup_secondary">#362D43</entry>
+	<entry key="text_popup_secondary_inverse">#DCD1ED</entry>
+
+	<!-- Scroll Overlay Text -->
+	<entry key="text_scroll_overlay">#362D43</entry>
+
+	<!-- Scroll Thumbs -->
+	<entry key="tint_scroll_thumbs">#FF9798</entry>
+
+	<!-- Icons -->
+	<entry key="tint_bar_action_icons">#DCD1ED</entry>
+	<entry key="tint_bar_main_icons">#DCD1ED</entry>
+	<entry key="tint_bar_tab_icons">#DCD1ED</entry>
+	<entry key="tint_bar_tools_icons">#DCD1ED</entry>
+
+	<!-- Dividers -->
+	<entry key="tint_divider_files">#0D0913</entry>
+	<entry key="tint_divider_popup_list">#0D0913</entry>
+	<entry key="tint_divider_settings">#0D0913</entry>
+
+	<!-- Folder -->
+	<entry key="tint_folder">#FF9798</entry>
+
+	<!-- Grid Item -->
+	<entry key="tint_grid_item">#261720</entry>
+
+	<!-- Icon Signs -->
+	<entry key="tint_icon_signs">#362D43</entry>
+
+	<!-- Notification Buttons -->
+	<entry key="tint_notification_buttons">#261720</entry>
+
+	<!-- Page Separator -->
+	<entry key="tint_page_separator">#362D43</entry>
+
+	<!-- Popup Background Color -->
+	<entry key="tint_popup_bg">#0D0913</entry>
+
+	<!-- Popup Colors -->
+	<entry key="tint_popup_controls">#261720</entry>
+	<entry key="tint_popup_controls_pressed">#FF9798</entry>
+	<entry key="tint_popup_icons">#FF9798</entry>
+
+	<!-- Progress Bar -->
+	<entry key="tint_progress_bar">#FF9798</entry>
+	<entry key="tint_progress_track">#261720</entry>
+
+	<!-- Widget -->
+	<entry key="tint_widget_off">#0D0913</entry>
+	<entry key="tint_widget_on">#0D0913</entry>
+
+	<!-- Edge Effect -->
+	<entry key="tint_edge_effect">#DCD1ED</entry>
+
+	<!-- Splash Screen-->
+	<entry key="splash_screen">#0D0913</entry>
+</properties>

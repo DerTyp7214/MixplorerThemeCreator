@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">Mixplorer Theme Creator</string>
+    <string name="preview">Preview</string>
+    <string name="doctypeHtml"><![CDATA[<!DOCTYPE html>]]></string>
+    <string name="codeOpen"><![CDATA[<html>\n<body>\n]]></string>
+    <string name="codeClose"><![CDATA[\n</body>\n</html>]]></string>
+    <string name="h1Open"><![CDATA[<h1>]]></string>
+    <string name="h1Close"><![CDATA[</h1>]]></string>
+    <string name="h1Content">My First Heading</string>
+    <string name="pOpen"><![CDATA[<p>]]></string>
+    <string name="pClose"><![CDATA[</p>]]></string>
+    <string name="pContent">My first paragraph.</string>
+    <string name="title">Title</string>
+    <string name="text1">Text 1</string>
+    <string name="text2">Text 2</string>
+    <string name="button">Button</string>
+    <string name="folder">Folder</string>
+    <string name="date">Date</string>
+    <string name="file">File</string>
+    <string name="archive">Archive</string>
+</resources>
