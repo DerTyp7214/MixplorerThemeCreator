@@ -1,10 +1,12 @@
 package de.dertyp7214.mixplorerthemecreator.core
 
-import android.util.Log
 import org.xml.sax.InputSource
 import java.io.StringReader
-import java.util.HashMap
+import java.util.Locale
 import javax.xml.parsers.DocumentBuilderFactory
+
+fun String.capitalize() =
+    replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
 
 fun String.readXML(): Map<String, Any> {
     val output = HashMap<String, Any>()

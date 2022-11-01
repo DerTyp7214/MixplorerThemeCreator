@@ -11,8 +11,8 @@ android {
         applicationId "de.dertyp7214.mixplorerthemecreator"
         minSdk 29
         targetSdk 33
-        versionCode 1
-        versionName "1.0"
+        versionCode 101
+        versionName "1.0.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

@@ -65,7 +65,7 @@ class ThemeUtils(private val activity: FragmentActivity) {
         }
     }
 
-    fun exportIcons() {
+    fun exportIcons(): File {
         val iconPath = File(themePath, "drawable")
         if (!iconPath.exists()) iconPath.mkdirs()
 
@@ -78,5 +78,7 @@ class ThemeUtils(private val activity: FragmentActivity) {
 
         ZipHelper.unpackZip(iconPath, zipFile)
         zipFile.delete()
+
+        return iconPath
     }
 }

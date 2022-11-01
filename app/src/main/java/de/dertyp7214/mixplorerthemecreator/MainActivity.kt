@@ -1,6 +1,8 @@
 package de.dertyp7214.mixplorerthemecreator
 
-import android.graphics.Color
+import android.annotation.SuppressLint
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.Bundle
 import android.view.View
@@ -9,7 +11,6 @@ import android.view.WindowInsets
 import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.EditText
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -17,16 +18,17 @@ import androidx.appcompat.widget.SwitchCompat
 import androidx.cardview.widget.CardView
 import androidx.core.graphics.ColorUtils
 import androidx.core.widget.doAfterTextChanged
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.button.MaterialButton
+import de.dertyp7214.mixplorerthemecreator.components.IconPreviewAdapter
 import de.dertyp7214.mixplorerthemecreator.components.SectionsPagerAdapter
+import de.dertyp7214.mixplorerthemecreator.core.capitalize
 import de.dertyp7214.mixplorerthemecreator.core.changeSaturation
 import de.dertyp7214.mixplorerthemecreator.core.getAttr
 import de.dertyp7214.mixplorerthemecreator.core.setBackground
 import de.dertyp7214.mixplorerthemecreator.core.setCardBackgroundColor
 import de.dertyp7214.mixplorerthemecreator.core.setIconTint
-import de.dertyp7214.mixplorerthemecreator.core.setImageTint
-import de.dertyp7214.mixplorerthemecreator.core.setRippleColor
 import de.dertyp7214.mixplorerthemecreator.core.setTextColor
 import de.dertyp7214.mixplorerthemecreator.utils.ColorHelper
 import de.dertyp7214.mixplorerthemecreator.utils.FileUtils
@@ -193,37 +195,26 @@ class MainActivity : AppCompatActivity() {
         changeColors()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private val iconsPreview: View.() -> Unit = {
-        val groupA: List<TextView> = listOf(
-            findViewById(R.id.textFolder),
-            findViewById(R.id.textFolderDate),
-            findViewById(R.id.textFile),
-            findViewById(R.id.textFileDate),
-            findViewById(R.id.textAudio),
-            findViewById(R.id.textAudioDate),
-            findViewById(R.id.textArchive),
-            findViewById(R.id.textArchiveDate)
-        )
-        val groupB: List<ImageView> = listOf(
-            findViewById(R.id.iconFolder),
-            findViewById(R.id.iconFile),
-            findViewById(R.id.iconAudio),
-            findViewById(R.id.iconArchive)
-        )
-        val groupC: List<ViewGroup> = listOf(
-            findViewById(R.id.folder),
-            findViewById(R.id.file),
-            findViewById(R.id.audio),
-            findViewById(R.id.archive)
-        )
+        val icons = ArrayList<Pair<String, Bitmap>>()
+        val adapter = IconPreviewAdapter(this@MainActivity, colorHelper, icons)
+
+        themeUtils.exportIcons().listFiles()?.forEach { file ->
+            val bitmap = BitmapFactory.decodeFile(file.absolutePath)
+            val name = file.nameWithoutExtension.split("_").joinToString(" ") { it.capitalize() }
+
+            icons.add(Pair(name, bitmap))
+        }
+
+        adapter.notifyDataSetChanged()
+
+        val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
+
+        recyclerView.adapter = adapter
 
         fun changeColors() {
-            val tintBarMainIcons = colorHelper.getColor("tint_bar_main_icons")
-            val rippleColor = colorHelper.getColor("tint_grid_item")
-
-            groupA.forEach { it.setTextColor(tintBarMainIcons, true) }
-            groupB.forEach { it.setImageTint(tintBarMainIcons, true) }
-            groupC.forEach { it.setRippleColor(rippleColor, Color.TRANSPARENT) }
+            adapter.changeColors()
         }
 
         colorChangeListeners.add(::changeColors)
@@ -253,6 +244,8 @@ class MainActivity : AppCompatActivity() {
             colorHelper.setTextColorMain(getAttr(com.google.android.material.R.attr.colorOnSurface))
             colorHelper.setTextColorSecondary(getAttr(com.google.android.material.R.attr.colorOnSecondaryContainer))
         } else colorHelper.resetColors()
+
+        themeUtils.exportIcons()
 
         colorChangeListeners.forEach { it() }
     }
