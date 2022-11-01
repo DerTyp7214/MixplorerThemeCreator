@@ -235,10 +235,21 @@ class MainActivity : AppCompatActivity() {
 
             doIoInBackground {
                 val tmp = ArrayList<Pair<String, Bitmap>>()
-                themeUtils.exportIcons(colorHelper, iconPack).listFiles()?.forEach { file ->
+                themeUtils.exportIcons(colorHelper, iconPack).listFiles()?.sortedWith { a, b ->
+                    when {
+                        a.name.lowercase().startsWith("file") && !b.name.lowercase()
+                            .startsWith("file") -> -1
+
+                        !a.name.lowercase().startsWith("file") && b.name.lowercase()
+                            .startsWith("file") -> 1
+
+                        else -> a.name.compareTo(b.name, true)
+                    }
+                }?.forEach { file ->
                     val bitmap = BitmapFactory.decodeFile(file.absolutePath)
                     val name =
-                        file.nameWithoutExtension.split("_").joinToString(" ") { it.capitalize() }
+                        file.nameWithoutExtension.split("_")
+                            .joinToString(" ") { it.capitalize() }
 
                     tmp.add(Pair(name, bitmap))
                 }

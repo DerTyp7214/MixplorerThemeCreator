@@ -137,6 +137,7 @@ class ThemeUtils(private val activity: FragmentActivity) {
 
     enum class IconPack(val rawName: String) {
         DUAL("mixdual"),
-        MONO("mixmono");
+        MONO("mixmono"),
+        THINNER("thinner");
     }
 }
