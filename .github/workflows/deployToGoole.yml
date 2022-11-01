@@ -1,0 +1,86 @@
+name: Deploy to Google Play
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Deploy to Google Play
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
+      - uses: nttld/setup-ndk@v1
+        with:
+          ndk-version: r23
+
+      - name: Setup JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: 19
+
+      - name: Cache Gradle dependencies
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+            !~/.gradle/caches/build-cache-*
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle.kts') }}
+          restore-keys: ${{ runner.os }}-gradle-
+
+      - name: Cache build cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            ${{ github.workspace }}/.ccache
+            ~/.gradle/caches/build-cache-*
+          key: ${{ runner.os }}-build-cache-${{ github.sha }}
+          restore-keys: ${{ runner.os }}-build-cache-
+
+      - name: File Permissions
+        run: chmod +x gradlew
+
+      - name: Accept Preview SDK License
+        run: echo -n -e "\n84831b9409646a918e30573bab4c9c91346d8abd" > /usr/local/lib/android/sdk/licenses/android-sdk-preview-license
+
+      - name: Build Bundle
+        id: buildBundle
+        uses: gradle/gradle-build-action@v2
+        with:
+          gradle-version: wrapper
+          arguments: bundleRelease
+
+      - name: Sign artifact
+        id: signArtifact
+        uses: r0adkll/sign-android-release@v1
+        with:
+          releaseDirectory: app/build/outputs/bundle/release
+          alias: ${{ secrets.KEYALIAS }}
+          signingKeyBase64: ${{ secrets.SIGNING_KEY }}
+          keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
+          keyPassword: ${{ secrets.KEY_PASSWORD }}
+        env:
+          BUILD_TOOLS_VERSION: 33.0.0
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: Artifact
+          path: app/build/outputs/bundle/release/app-release.aab
+
+      - name: Create whatsNew
+        run: mkdir distribution/; echo '${{ github.event.head_commit.message }}' > distribution/whatsnew-en-US
+
+      - name: Deploy to Production
+        uses: r0adkll/upload-google-play@v1.0.17
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
+          packageName: de.dertyp7214.mixplorerthemecreator
+          releaseFiles: app/build/outputs/bundle/release/*.aab
+          mappingFile: app/build/outputs/mapping/release/mapping.txt
+          track: production
+          whatsNewDirectory: distribution/
