@@ -74,7 +74,6 @@ class ColorHelper(
         "text_grid_secondary",
         "text_popup_secondary",
         "text_scroll_overlay",
-        "tint_icon_signs",
         "tint_page_separator"
     )
 
@@ -106,7 +105,7 @@ class ColorHelper(
         "tint_popup_controls_pressed",
         "tint_popup_icons",
         "tint_progress_bar",
-        "tint_icon_singns"
+        "tint_icon_signs"
     )
 
     private val syntaxAttr = "syntax_attr"
