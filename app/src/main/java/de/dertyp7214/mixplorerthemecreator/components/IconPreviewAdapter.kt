@@ -10,7 +10,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import de.dertyp7214.mixplorerthemecreator.R
-import de.dertyp7214.mixplorerthemecreator.core.setImageTint
 import de.dertyp7214.mixplorerthemecreator.core.setRippleColor
 import de.dertyp7214.mixplorerthemecreator.core.setTextColor
 import de.dertyp7214.mixplorerthemecreator.utils.ColorHelper
@@ -48,7 +47,6 @@ class IconPreviewAdapter(
             holder.text.setTextColor(tintBarMainIcons, true)
             holder.textDate.setTextColor(tintBarMainIcons, true)
             holder.wrapper.setRippleColor(rippleColor, Color.TRANSPARENT)
-            holder.icon.setImageTint(tintBarMainIcons, true)
         }
 
         colorChangeListeners.add(::changeColors)

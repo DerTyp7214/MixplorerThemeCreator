@@ -11,6 +11,7 @@ import android.view.WindowInsets
 import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -21,11 +22,13 @@ import androidx.core.widget.doAfterTextChanged
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.button.MaterialButton
+import de.dertyp7214.mixplorerthemecreator.components.IconPackBottomSheet
 import de.dertyp7214.mixplorerthemecreator.components.IconPreviewAdapter
 import de.dertyp7214.mixplorerthemecreator.components.SectionsPagerAdapter
 import de.dertyp7214.mixplorerthemecreator.core.capitalize
 import de.dertyp7214.mixplorerthemecreator.core.changeSaturation
 import de.dertyp7214.mixplorerthemecreator.core.getAttr
+import de.dertyp7214.mixplorerthemecreator.core.isLightTheme
 import de.dertyp7214.mixplorerthemecreator.core.setBackground
 import de.dertyp7214.mixplorerthemecreator.core.setCardBackgroundColor
 import de.dertyp7214.mixplorerthemecreator.core.setIconTint
@@ -33,6 +36,8 @@ import de.dertyp7214.mixplorerthemecreator.core.setTextColor
 import de.dertyp7214.mixplorerthemecreator.utils.ColorHelper
 import de.dertyp7214.mixplorerthemecreator.utils.FileUtils
 import de.dertyp7214.mixplorerthemecreator.utils.ThemeUtils
+import de.dertyp7214.mixplorerthemecreator.utils.doIoInBackground
+import de.dertyp7214.mixplorerthemecreator.utils.runOnMain
 import java.io.File
 import kotlin.math.roundToInt
 
@@ -53,6 +58,10 @@ class MainActivity : AppCompatActivity() {
     private val btnShare by lazy { findViewById<Button>(R.id.btnShare) }
     private val btnGenerateTheme by lazy { findViewById<Button>(R.id.btnGenerateTheme) }
 
+    private val textIconPack by lazy { findViewById<TextView>(R.id.textIconPack) }
+    private val cardIconPack by lazy { findViewById<CardView>(R.id.cardIconPack) }
+    private val imgIconPack by lazy { findViewById<ImageView>(R.id.imgIconPack) }
+
     private val adapter by lazy { SectionsPagerAdapter(viewPager, dots, pages) }
 
     private val pages by lazy {
@@ -68,16 +77,29 @@ class MainActivity : AppCompatActivity() {
 
     private val fileUtils = FileUtils(this)
 
+    private val iconPackBottomSheet by lazy {
+        IconPackBottomSheet(colorHelper) {
+            iconPack = it
+            setColor()
+        }
+    }
+
     private val colorChangeListeners = arrayListOf({
         previewCard.setCardBackgroundColor(colorHelper.getColor("bg_page"), true)
 
         editTextName.setText(themeUtils.get("title"))
+
+        textIconPack.text = iconPack.rawName.capitalize()
+        imgIconPack.setImageBitmap(themeUtils.iconPackPreview(colorHelper, iconPack))
     })
+
+    private var iconPack: ThemeUtils.IconPack = ThemeUtils.IconPack.DUAL
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        viewPager.offscreenPageLimit = 3
         viewPager.adapter = adapter
 
         editTextName.doAfterTextChanged {
@@ -112,6 +134,10 @@ class MainActivity : AppCompatActivity() {
             setColor()
         }
 
+        cardIconPack.setOnClickListener {
+            iconPackBottomSheet.show(this)
+        }
+
         btnShare.setOnClickListener {
             createTheme()?.let(fileUtils::shareTheme)
         }
@@ -128,7 +154,7 @@ class MainActivity : AppCompatActivity() {
 
         themeUtils.exportXml()
         themeUtils.exportFont()
-        themeUtils.exportIcons()
+        themeUtils.exportIcons(colorHelper, iconPack)
 
         return themeUtils.packTheme(themeUtils.get("title"))
     }
@@ -200,21 +226,29 @@ class MainActivity : AppCompatActivity() {
         val icons = ArrayList<Pair<String, Bitmap>>()
         val adapter = IconPreviewAdapter(this@MainActivity, colorHelper, icons)
 
-        themeUtils.exportIcons().listFiles()?.forEach { file ->
-            val bitmap = BitmapFactory.decodeFile(file.absolutePath)
-            val name = file.nameWithoutExtension.split("_").joinToString(" ") { it.capitalize() }
-
-            icons.add(Pair(name, bitmap))
-        }
-
-        adapter.notifyDataSetChanged()
-
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
 
         recyclerView.adapter = adapter
 
         fun changeColors() {
             adapter.changeColors()
+
+            doIoInBackground {
+                val tmp = ArrayList<Pair<String, Bitmap>>()
+                themeUtils.exportIcons(colorHelper, iconPack).listFiles()?.forEach { file ->
+                    val bitmap = BitmapFactory.decodeFile(file.absolutePath)
+                    val name =
+                        file.nameWithoutExtension.split("_").joinToString(" ") { it.capitalize() }
+
+                    tmp.add(Pair(name, bitmap))
+                }
+
+                runOnMain {
+                    icons.clear()
+                    icons.addAll(tmp)
+                    adapter.notifyDataSetChanged()
+                }
+            }
         }
 
         colorChangeListeners.add(::changeColors)
@@ -224,6 +258,10 @@ class MainActivity : AppCompatActivity() {
 
     private fun setColor() {
         if (switchMonet.isChecked) {
+            val accent =
+                if (switchTertiary.isChecked) getAttr(com.google.android.material.R.attr.colorTertiary)
+                else getAttr(com.google.android.material.R.attr.colorPrimary)
+
             colorHelper.setBackgroundColor(getAttr(com.google.android.material.R.attr.colorSurface))
             colorHelper.setBackgroundColorVariant(getAttr(com.google.android.material.R.attr.colorSurfaceVariant))
             colorHelper.setControlColor(
@@ -237,15 +275,10 @@ class MainActivity : AppCompatActivity() {
                 getAttr(com.google.android.material.R.attr.colorTertiary).changeSaturation(2f)
             )
             colorHelper.setTextColorMain(getAttr(com.google.android.material.R.attr.colorOnSurface))
-            colorHelper.setAccentColor(
-                if (switchTertiary.isChecked) getAttr(com.google.android.material.R.attr.colorTertiary)
-                else getAttr(com.google.android.material.R.attr.colorPrimary)
-            )
-            colorHelper.setTextColorMain(getAttr(com.google.android.material.R.attr.colorOnSurface))
+            colorHelper.setAccentColor(accent)
             colorHelper.setTextColorSecondary(getAttr(com.google.android.material.R.attr.colorOnSecondaryContainer))
+            colorHelper.setLightStatusBar(isLightTheme)
         } else colorHelper.resetColors()
-
-        themeUtils.exportIcons()
 
         colorChangeListeners.forEach { it() }
     }

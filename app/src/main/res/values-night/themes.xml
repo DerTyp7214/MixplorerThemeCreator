@@ -5,6 +5,9 @@
         <item name="android:statusBarColor">?android:attr/colorBackground</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
 
+        <item name="android:windowSplashScreenAnimatedIcon" tools:ignore="NewApi">
+            @drawable/ic_launcher_splash
+        </item>
         <item name="android:windowSplashScreenBackground" tools:ignore="NewApi">
             ?attr/colorSurface
         </item>
@@ -17,5 +20,7 @@
 
         <item name="darkThemeText">?attr/colorOnPrimary</item>
         <item name="lightThemeText">?attr/colorOnSurfaceVariant</item>
+
+        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
     </style>
 </resources>

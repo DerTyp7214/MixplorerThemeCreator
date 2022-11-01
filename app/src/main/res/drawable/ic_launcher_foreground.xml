@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="432"
+    android:viewportHeight="432">
+  <path
+      android:pathData="M284.09,284.09C316.39,275.48 329.05,247.22 312.3,216C329.04,184.79 316.39,156.52 284.09,147.91C275.48,115.61 247.21,102.96 216,119.71C184.78,102.96 156.52,115.61 147.91,147.91C115.61,156.52 102.95,184.79 119.7,216C102.95,247.22 115.61,275.48 147.91,284.1C156.52,316.4 184.78,329.05 216,312.3C247.21,329.05 275.48,316.4 284.09,284.09ZM216,267.85C244.63,267.85 267.85,244.64 267.85,216C267.85,187.37 244.63,164.15 216,164.15C187.37,164.15 164.15,187.37 164.15,216C164.15,244.64 187.37,267.85 216,267.85Z"
+      android:fillColor="@color/ic_launcher_foreground"
+      android:fillType="evenOdd"/>
+</vector>

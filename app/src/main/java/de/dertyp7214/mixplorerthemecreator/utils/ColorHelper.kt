@@ -38,7 +38,9 @@ class ColorHelper(
         "tint_popup_bg",
         "tint_widget_off",
         "tint_widget_on",
-        "splash_screen"
+        "splash_screen",
+        "tint_icon_signs",
+        "text_edit_selection_foreground"
     )
 
     private val colorGroupTextMain = listOf(
@@ -51,7 +53,6 @@ class ColorHelper(
         "text_editor_foreground",
         "text_edit_box",
         "text_edit_box_hint",
-        "text_edit_selection_foreground",
         "text_filter_box",
         "text_grid_primary",
         "text_grid_primary_inverse",
@@ -104,8 +105,7 @@ class ColorHelper(
         "tint_folder",
         "tint_popup_controls_pressed",
         "tint_popup_icons",
-        "tint_progress_bar",
-        "tint_icon_signs"
+        "tint_progress_bar"
     )
 
     private val syntaxAttr = "syntax_attr"
@@ -114,6 +114,8 @@ class ColorHelper(
     private val syntaxKeyword = "syntax_keyword"
     private val syntaxString = "syntax_string"
     private val syntaxSymbol = "syntax_symbol"
+
+    private val lightStatusBar = "light_status_bar"
 
     fun setBackgroundColor(@ColorInt color: Int) =
         colorGroupBackground.forEach { setColor(it, color) }
@@ -148,6 +150,7 @@ class ColorHelper(
     fun setSyntaxKeywordColor(@ColorInt color: Int) = setColor(syntaxKeyword, color)
     fun setSyntaxStringColor(@ColorInt color: Int) = setColor(syntaxString, color)
     fun setSyntaxSymbolColor(@ColorInt color: Int) = setColor(syntaxSymbol, color)
+    fun setLightStatusBar(isLight: Boolean) = themeUtils.set(lightStatusBar, isLight)
 
     fun resetColors() {
         val tmp = XMLFile(
@@ -206,6 +209,8 @@ class ColorHelper(
                 )
             )
         )
+
+    fun iconPackPreview(iconPack: ThemeUtils.IconPack) = themeUtils.iconPackPreview(this, iconPack)
 
     private fun createNightModeContext(context: Context, isNightMode: Boolean): Context {
         val uiModeFlag =

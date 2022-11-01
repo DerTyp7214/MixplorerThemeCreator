@@ -1,10 +1,14 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
+
     <style name="Theme.MixplorerThemeCreator" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="android:windowLightStatusBar">?attr/isLightTheme</item>
 
         <item name="android:statusBarColor">?android:attr/colorBackground</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
 
+        <item name="android:windowSplashScreenAnimatedIcon" tools:ignore="NewApi">
+            @drawable/ic_launcher_splash
+        </item>
         <item name="android:windowSplashScreenBackground" tools:ignore="NewApi">
             ?attr/colorSurface
         </item>
@@ -17,5 +21,11 @@
 
         <item name="darkThemeText">?attr/colorOnSurfaceVariant</item>
         <item name="lightThemeText">?attr/colorOnPrimary</item>
+
+        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
+    </style>
+
+    <style name="ThemeOverlay.App.BottomSheetDialog" parent="ThemeOverlay.Material3.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/ModalBottomSheetDialog</item>
     </style>
 </resources>

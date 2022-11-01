@@ -7,6 +7,7 @@ import androidx.annotation.ColorInt
 import de.dertyp7214.mixplorerthemecreator.core.joinToString
 import de.dertyp7214.mixplorerthemecreator.core.readXML
 import de.dertyp7214.mixplorerthemecreator.core.times
+import org.apache.commons.text.StringEscapeUtils
 import java.io.File
 import java.util.*
 
@@ -95,7 +96,7 @@ class XMLEntry(val key: String, _value: String) {
         return this
     }
 
-    operator fun get(indent: Int) = "${" " * indent}<entry key=\"$key\">$value</entry>"
+    operator fun get(indent: Int) = "${" " * indent}<entry key=\"$key\">${StringEscapeUtils.escapeXml11(value)}</entry>"
 
     override fun toString() = this[0]
 

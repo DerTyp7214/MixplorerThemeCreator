@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package de.dertyp7214.mixplorerthemecreator.core
 
 import android.content.Context
@@ -33,6 +35,16 @@ fun Int.changeHue(@IntRange(from = -360, to = 360) rotation: Int): Int {
     hsl[0] = if (hsl[0] + rotation > 360) hsl[0] + rotation - 360
     else if (hsl[0] + rotation < 0) hsl[0] + rotation + 360
     else hsl[0] + rotation
+
+    return ColorUtils.HSLToColor(hsl)
+}
+
+@ColorInt
+fun Int.changeLightness(factor: Float): Int {
+    val hsl = floatArrayOf(0f, 0f, 0f)
+
+    ColorUtils.colorToHSL(this, hsl)
+    hsl[2] *= factor
 
     return ColorUtils.HSLToColor(hsl)
 }

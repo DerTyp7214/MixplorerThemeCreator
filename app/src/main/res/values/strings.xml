@@ -26,4 +26,5 @@
     <string name="generateTheme">Generate theme</string>
     <string name="share_theme">Share Theme</string>
     <string name="name">Name</string>
+    <string name="iconPack">Icon pack</string>
 </resources>

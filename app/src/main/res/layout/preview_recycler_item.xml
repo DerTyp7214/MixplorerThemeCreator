@@ -5,6 +5,7 @@
     android:id="@+id/wrapper"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackground"
     android:clickable="true"
     android:orientation="horizontal"
     android:padding="8dp">
@@ -14,7 +15,6 @@
         android:layout_width="56dp"
         android:layout_height="56dp"
         app:srcCompat="@drawable/ic_folder"
-        app:tint="?attr/colorOnSurface"
         tools:ignore="ContentDescription" />
 
     <LinearLayout
