@@ -5,12 +5,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.annotation.LayoutRes
+import androidx.core.graphics.ColorUtils
 import androidx.core.view.forEachIndexed
+import androidx.core.view.get
 import androidx.core.view.updatePadding
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
 import de.dertyp7214.mixplorerthemecreator.R
+import de.dertyp7214.mixplorerthemecreator.core.colorPrimary
+import de.dertyp7214.mixplorerthemecreator.core.colorSurface
 import de.dertyp7214.mixplorerthemecreator.core.dpToPxRounded
+import de.dertyp7214.mixplorerthemecreator.core.setImageTint
 
 class SectionsPagerAdapter(
     private val viewPager: ViewPager,
@@ -29,9 +34,14 @@ class SectionsPagerAdapter(
                 layoutParams = ViewGroup.LayoutParams(size + (padding * 2), size)
                 updatePadding(left = padding, right = padding)
 
-                setImageResource(R.drawable.tab_selector)
+                setImageResource(R.drawable.default_dot)
 
-                if (i == 0) isSelected = true
+                if (i == 0) setImageTint(context.colorPrimary)
+                else setImageTint(context.colorSurface)
+
+                setOnClickListener {
+                    viewPager.setCurrentItem(i, true)
+                }
             })
         }
 
@@ -41,13 +51,31 @@ class SectionsPagerAdapter(
                 positionOffset: Float,
                 positionOffsetPixels: Int
             ) {
+                val colorPrimary = context.colorPrimary
+                val colorSurface = context.colorSurface
+
+                val currentDot = dots[position]
+                val nextDot = dots.getChildAt(position + 1)
+
+                if (currentDot is ImageView && nextDot is ImageView && positionOffset > 0) {
+                    val currentColor =
+                        ColorUtils.blendARGB(colorPrimary, colorSurface, positionOffset)
+                    val nextColor =
+                        ColorUtils.blendARGB(colorSurface, colorPrimary, positionOffset)
+
+                    currentDot.setImageTint(currentColor)
+                    nextDot.setImageTint(nextColor)
+                }
             }
 
             override fun onPageScrollStateChanged(state: Int) {}
 
             override fun onPageSelected(position: Int) {
                 dots.forEachIndexed { index, view ->
-                    view.isSelected = index == position
+                    if (view is ImageView) {
+                        if (index == position) view.setImageTint(context.colorPrimary)
+                        else view.setImageTint(context.colorSurface)
+                    }
                 }
             }
         })

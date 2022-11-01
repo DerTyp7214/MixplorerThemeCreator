@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="darkThemeBackground" format="color|reference" />
+    <attr name="lightThemeBackground" format="color|reference" />
+
+    <attr name="darkThemeText" format="color|reference" />
+    <attr name="lightThemeText" format="color|reference" />
+</resources>

@@ -1,30 +1,55 @@
 package de.dertyp7214.mixplorerthemecreator
 
-import android.content.res.ColorStateList
-import android.graphics.drawable.ColorDrawable
-import android.graphics.drawable.RippleDrawable
+import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowInsets
+import android.view.inputmethod.EditorInfo
+import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.widget.SwitchCompat
+import androidx.cardview.widget.CardView
 import androidx.core.graphics.ColorUtils
+import androidx.core.widget.doAfterTextChanged
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.button.MaterialButton
-import com.google.android.material.card.MaterialCardView
 import de.dertyp7214.mixplorerthemecreator.components.SectionsPagerAdapter
 import de.dertyp7214.mixplorerthemecreator.core.changeSaturation
 import de.dertyp7214.mixplorerthemecreator.core.getAttr
+import de.dertyp7214.mixplorerthemecreator.core.setBackground
+import de.dertyp7214.mixplorerthemecreator.core.setCardBackgroundColor
+import de.dertyp7214.mixplorerthemecreator.core.setIconTint
+import de.dertyp7214.mixplorerthemecreator.core.setImageTint
+import de.dertyp7214.mixplorerthemecreator.core.setRippleColor
+import de.dertyp7214.mixplorerthemecreator.core.setTextColor
 import de.dertyp7214.mixplorerthemecreator.utils.ColorHelper
+import de.dertyp7214.mixplorerthemecreator.utils.FileUtils
 import de.dertyp7214.mixplorerthemecreator.utils.ThemeUtils
+import java.io.File
 import kotlin.math.roundToInt
 
 class MainActivity : AppCompatActivity() {
 
-    private val previewCard by lazy { findViewById<MaterialCardView>(R.id.previewCard) }
+    private val previewCard by lazy { findViewById<CardView>(R.id.previewCard) }
     private val viewPager by lazy { findViewById<ViewPager>(R.id.viewPager) }
     private val dots by lazy { findViewById<ViewGroup>(R.id.dots) }
+
+    private val editTextName by lazy { findViewById<EditText>(R.id.editTextName) }
+
+    private val cardDark by lazy { findViewById<CardView>(R.id.cardDark) }
+    private val cardLight by lazy { findViewById<CardView>(R.id.cardLight) }
+
+    private val switchMonet by lazy { findViewById<SwitchCompat>(R.id.switchMonet) }
+    private val switchTertiary by lazy { findViewById<SwitchCompat>(R.id.switchTertiary) }
+
+    private val btnShare by lazy { findViewById<Button>(R.id.btnShare) }
+    private val btnGenerateTheme by lazy { findViewById<Button>(R.id.btnGenerateTheme) }
 
     private val adapter by lazy { SectionsPagerAdapter(viewPager, dots, pages) }
 
@@ -39,8 +64,12 @@ class MainActivity : AppCompatActivity() {
     private val themeUtils by lazy { ThemeUtils(this) }
     private val colorHelper by lazy { ColorHelper(themeUtils) }
 
+    private val fileUtils = FileUtils(this)
+
     private val colorChangeListeners = arrayListOf({
-        previewCard.setCardBackgroundColor(colorHelper.getColor("bg_page"))
+        previewCard.setCardBackgroundColor(colorHelper.getColor("bg_page"), true)
+
+        editTextName.setText(themeUtils.get("title"))
     })
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,16 +78,57 @@ class MainActivity : AppCompatActivity() {
 
         viewPager.adapter = adapter
 
-        colorChangeListeners.forEach { it() }
-        setColor()
+        editTextName.doAfterTextChanged {
+            it?.toString()?.let { title -> themeUtils.set("title", title) }
+        }
 
+        editTextName.setOnEditorActionListener { _, actionId, _ ->
+            when (actionId) {
+                EditorInfo.IME_ACTION_DONE -> {
+                    editTextName.clearFocus()
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
+                        editTextName.windowInsetsController?.hide(WindowInsets.Type.ime())
+                    true
+                }
+
+                else -> false
+            }
+        }
+
+        cardDark.setOnClickListener {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+        }
+        cardLight.setOnClickListener {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        }
+
+        switchMonet.setOnCheckedChangeListener { _, _ ->
+            setColor()
+        }
+
+        switchTertiary.setOnCheckedChangeListener { _, _ ->
+            setColor()
+        }
+
+        btnShare.setOnClickListener {
+            createTheme()?.let(fileUtils::shareTheme)
+        }
+
+        btnGenerateTheme.setOnClickListener {
+            createTheme()?.let(fileUtils::exportTheme)
+        }
+
+        setColor()
+    }
+
+    private fun createTheme(): File? {
         themeUtils.clean()
 
         themeUtils.exportXml()
         themeUtils.exportFont()
         themeUtils.exportIcons()
 
-        themeUtils.packTheme()
+        return themeUtils.packTheme(themeUtils.get("title"))
     }
 
     private val htmlPreview: View.() -> Unit = {
@@ -80,8 +150,8 @@ class MainActivity : AppCompatActivity() {
             val syntaxKeyword = colorHelper.getColor("syntax_keyword")
             val syntaxString = colorHelper.getColor("syntax_string")
 
-            groupA.forEach { it.setTextColor(syntaxString) }
-            groupB.forEach { it.setTextColor(syntaxKeyword) }
+            groupA.forEach { it.setTextColor(syntaxString, true) }
+            groupB.forEach { it.setTextColor(syntaxKeyword, true) }
         }
 
         colorChangeListeners.add(::changeColors)
@@ -107,15 +177,14 @@ class MainActivity : AppCompatActivity() {
             groupA.forEach { it.setTextColor(textBarMainPrimary) }
             groupB.forEach {
                 if (it.icon == null) {
-                    it.setTextColor(buttonTextColor)
-                    it.backgroundTintList =
-                        ColorStateList.valueOf(
-                            ColorUtils.setAlphaComponent(
-                                buttonTextColor,
-                                (255 * .2f).roundToInt()
-                            )
-                        )
-                } else it.iconTint = ColorStateList.valueOf(buttonTextColor)
+                    it.setTextColor(buttonTextColor, true)
+                    it.setBackground(
+                        ColorUtils.setAlphaComponent(
+                            buttonTextColor,
+                            (255 * .2f).roundToInt()
+                        ), true
+                    )
+                } else it.setIconTint(buttonTextColor, true)
             }
         }
 
@@ -130,40 +199,31 @@ class MainActivity : AppCompatActivity() {
             findViewById(R.id.textFolderDate),
             findViewById(R.id.textFile),
             findViewById(R.id.textFileDate),
+            findViewById(R.id.textAudio),
+            findViewById(R.id.textAudioDate),
             findViewById(R.id.textArchive),
             findViewById(R.id.textArchiveDate)
         )
         val groupB: List<ImageView> = listOf(
             findViewById(R.id.iconFolder),
             findViewById(R.id.iconFile),
+            findViewById(R.id.iconAudio),
             findViewById(R.id.iconArchive)
         )
         val groupC: List<ViewGroup> = listOf(
             findViewById(R.id.folder),
             findViewById(R.id.file),
+            findViewById(R.id.audio),
             findViewById(R.id.archive)
         )
-
 
         fun changeColors() {
             val tintBarMainIcons = colorHelper.getColor("tint_bar_main_icons")
             val rippleColor = colorHelper.getColor("tint_grid_item")
-            val backgroundColor = colorHelper.getColor("bg_page")
 
-            val rippleDrawable = {
-                RippleDrawable(
-                    ColorStateList(
-                        arrayOf(intArrayOf()),
-                        intArrayOf(rippleColor)
-                    ),
-                    ColorDrawable(backgroundColor),
-                    null
-                )
-            }
-
-            groupA.forEach { it.setTextColor(tintBarMainIcons) }
-            groupB.forEach { it.imageTintList = ColorStateList.valueOf(tintBarMainIcons) }
-            groupC.forEach { it.background = rippleDrawable() }
+            groupA.forEach { it.setTextColor(tintBarMainIcons, true) }
+            groupB.forEach { it.setImageTint(tintBarMainIcons, true) }
+            groupC.forEach { it.setRippleColor(rippleColor, Color.TRANSPARENT) }
         }
 
         colorChangeListeners.add(::changeColors)
@@ -172,19 +232,27 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setColor() {
-        colorHelper.setBackgroundColor(getAttr(com.google.android.material.R.attr.colorSurface))
-        colorHelper.setBackgroundColorVariant(getAttr(com.google.android.material.R.attr.colorSurfaceVariant))
-        colorHelper.setControlColor(
-            getAttr(com.google.android.material.R.attr.colorPrimaryContainer).changeSaturation(.7f)
-        )
-        colorHelper.setSyntaxColor(
-            getAttr(com.google.android.material.R.attr.colorPrimary).changeSaturation(1.5f),
-            getAttr(com.google.android.material.R.attr.colorTertiary).changeSaturation(2f)
-        )
-        colorHelper.setTextColorMain(getAttr(com.google.android.material.R.attr.colorOnSurface))
-        colorHelper.setAccentColor(getAttr(com.google.android.material.R.attr.colorPrimary))
-        colorHelper.setTextColorMain(getAttr(com.google.android.material.R.attr.colorOnSurface))
-        colorHelper.setTextColorSecondary(getAttr(com.google.android.material.R.attr.colorOnSecondaryContainer))
+        if (switchMonet.isChecked) {
+            colorHelper.setBackgroundColor(getAttr(com.google.android.material.R.attr.colorSurface))
+            colorHelper.setBackgroundColorVariant(getAttr(com.google.android.material.R.attr.colorSurfaceVariant))
+            colorHelper.setControlColor(
+                if (switchTertiary.isChecked) getAttr(com.google.android.material.R.attr.colorTertiaryContainer)
+                    .changeSaturation(.7f)
+                else getAttr(com.google.android.material.R.attr.colorPrimaryContainer)
+                    .changeSaturation(.7f)
+            )
+            colorHelper.setSyntaxColor(
+                getAttr(com.google.android.material.R.attr.colorPrimary).changeSaturation(1.5f),
+                getAttr(com.google.android.material.R.attr.colorTertiary).changeSaturation(2f)
+            )
+            colorHelper.setTextColorMain(getAttr(com.google.android.material.R.attr.colorOnSurface))
+            colorHelper.setAccentColor(
+                if (switchTertiary.isChecked) getAttr(com.google.android.material.R.attr.colorTertiary)
+                else getAttr(com.google.android.material.R.attr.colorPrimary)
+            )
+            colorHelper.setTextColorMain(getAttr(com.google.android.material.R.attr.colorOnSurface))
+            colorHelper.setTextColorSecondary(getAttr(com.google.android.material.R.attr.colorOnSecondaryContainer))
+        } else colorHelper.resetColors()
 
         colorChangeListeners.forEach { it() }
     }

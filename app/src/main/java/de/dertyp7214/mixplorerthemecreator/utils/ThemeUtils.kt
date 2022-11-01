@@ -7,28 +7,43 @@ import de.dertyp7214.mixplorerthemecreator.components.XMLFile
 import java.io.File
 import java.io.FileOutputStream
 
-@Suppress("CanBeParameter", "unused")
+@Suppress("unused")
 class ThemeUtils(private val activity: FragmentActivity) {
     internal val context: Context = activity
 
     private val themePath = File(context.filesDir, "theme")
 
-    internal val properties = XMLFile(
+    internal var properties = XMLFile(
         activity.resources
             .openRawResource(R.raw.properties)
             .bufferedReader().use { it.readText() }
     )
+        private set
 
     fun getProperties() = properties.simpleMap()
+
+    fun get(name: String, default: String = "") =
+        properties.getValue(name)?.value ?: default
+
+    fun set(name: String, value: String) =
+        properties.getValue(name)?.setValue(value)
+
+    fun reset() {
+        properties = XMLFile(
+            activity.resources
+                .openRawResource(R.raw.properties)
+                .bufferedReader().use { it.readText() }
+        )
+    }
 
     fun clean() {
         themePath.deleteRecursively()
     }
 
-    fun packTheme(): File? {
+    fun packTheme(name: String = "theme"): File? {
         if (!themePath.exists()) return null
 
-        val zipFile = File(context.filesDir, "theme.mit")
+        val zipFile = File(context.filesDir, "${name.ifEmpty { "theme" }}.mit")
 
         ZipHelper.zip(listOf(themePath), zipFile)
 

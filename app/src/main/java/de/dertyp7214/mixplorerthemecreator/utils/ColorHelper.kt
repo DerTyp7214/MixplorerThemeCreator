@@ -8,6 +8,8 @@ import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.appcompat.view.ContextThemeWrapper
+import de.dertyp7214.mixplorerthemecreator.R
+import de.dertyp7214.mixplorerthemecreator.components.XMLFile
 import de.dertyp7214.mixplorerthemecreator.core.changeHue
 import de.dertyp7214.mixplorerthemecreator.core.changeSaturation
 import de.dertyp7214.mixplorerthemecreator.core.getAttr
@@ -145,6 +147,33 @@ class ColorHelper(
     fun setSyntaxKeywordColor(@ColorInt color: Int) = setColor(syntaxKeyword, color)
     fun setSyntaxStringColor(@ColorInt color: Int) = setColor(syntaxString, color)
     fun setSyntaxSymbolColor(@ColorInt color: Int) = setColor(syntaxSymbol, color)
+
+    fun resetColors() {
+        val tmp = XMLFile(
+            context.resources
+                .openRawResource(R.raw.properties)
+                .bufferedReader().use { it.readText() }
+        )
+
+        val keys = ArrayList<String>()
+        keys.addAll(colorGroupBackground)
+        keys.addAll(colorGroupAccent)
+        keys.addAll(colorGroupBackgroundVariant)
+        keys.addAll(colorGroupControl)
+        keys.addAll(colorGroupTextMain)
+        keys.addAll(colorGroupTextSecondary)
+
+        keys.add(syntaxAttr)
+        keys.add(syntaxAttrValue)
+        keys.add(syntaxComment)
+        keys.add(syntaxKeyword)
+        keys.add(syntaxString)
+        keys.add(syntaxSymbol)
+
+        keys.forEach { key ->
+            tmp.getValue(key)?.value?.let { themeUtils.properties.getValue(key)?.setValue(it) }
+        }
+    }
 
     var dark: Boolean =
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) context.resources.configuration.isNightModeActive

@@ -12,10 +12,10 @@
             @drawable/dertyp_branding
         </item>
 
-        <item name="darkThemeBackground">?attr/colorSurfaceVariant</item>
-        <item name="lightThemeBackground">?attr/colorPrimary</item>
+        <item name="darkThemeBackground">?attr/colorPrimary</item>
+        <item name="lightThemeBackground">?attr/colorSurfaceVariant</item>
 
-        <item name="darkThemeText">?attr/colorOnSurfaceVariant</item>
-        <item name="lightThemeText">?attr/colorOnPrimary</item>
+        <item name="darkThemeText">?attr/colorOnPrimary</item>
+        <item name="lightThemeText">?attr/colorOnSurfaceVariant</item>
     </style>
 </resources>
