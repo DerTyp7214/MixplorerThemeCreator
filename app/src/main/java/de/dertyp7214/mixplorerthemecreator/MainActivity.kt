@@ -27,6 +27,8 @@ import de.dertyp7214.mixplorerthemecreator.components.IconPreviewAdapter
 import de.dertyp7214.mixplorerthemecreator.components.SectionsPagerAdapter
 import de.dertyp7214.mixplorerthemecreator.core.capitalize
 import de.dertyp7214.mixplorerthemecreator.core.changeSaturation
+import de.dertyp7214.mixplorerthemecreator.core.colorPrimary
+import de.dertyp7214.mixplorerthemecreator.core.colorSurface
 import de.dertyp7214.mixplorerthemecreator.core.getAttr
 import de.dertyp7214.mixplorerthemecreator.core.isLightTheme
 import de.dertyp7214.mixplorerthemecreator.core.setBackground
@@ -271,9 +273,9 @@ class MainActivity : AppCompatActivity() {
         if (switchMonet.isChecked) {
             val accent =
                 if (switchTertiary.isChecked) getAttr(com.google.android.material.R.attr.colorTertiary)
-                else getAttr(com.google.android.material.R.attr.colorPrimary)
+                else colorPrimary
 
-            colorHelper.setBackgroundColor(getAttr(com.google.android.material.R.attr.colorSurface))
+            colorHelper.setBackgroundColor(colorSurface)
             colorHelper.setBackgroundColorVariant(getAttr(com.google.android.material.R.attr.colorSurfaceVariant))
             colorHelper.setControlColor(
                 if (switchTertiary.isChecked) getAttr(com.google.android.material.R.attr.colorTertiaryContainer)
@@ -282,11 +284,16 @@ class MainActivity : AppCompatActivity() {
                     .changeSaturation(.7f)
             )
             colorHelper.setSyntaxColor(
-                getAttr(com.google.android.material.R.attr.colorPrimary).changeSaturation(1.5f),
+                colorPrimary.changeSaturation(1.5f),
                 getAttr(com.google.android.material.R.attr.colorTertiary).changeSaturation(2f)
             )
             colorHelper.setTextColorMain(getAttr(com.google.android.material.R.attr.colorOnSurface))
             colorHelper.setAccentColor(accent)
+            colorHelper.setColorBetweenForeAndBackground(
+                ColorUtils.blendARGB(
+                    colorSurface, getAttr(com.google.android.material.R.attr.colorOnSurface), .5f
+                )
+            )
             colorHelper.setTextColorSecondary(getAttr(com.google.android.material.R.attr.colorOnSecondaryContainer))
             colorHelper.setLightStatusBar(isLightTheme)
         } else colorHelper.resetColors()

@@ -39,7 +39,6 @@ class ColorHelper(
         "tint_widget_off",
         "tint_widget_on",
         "splash_screen",
-        "tint_icon_signs",
         "text_edit_selection_foreground"
     )
 
@@ -108,6 +107,10 @@ class ColorHelper(
         "tint_progress_bar"
     )
 
+    private val colorGroupBetweenForeAndBackground = listOf(
+        "tint_icon_signs"
+    )
+
     private val syntaxAttr = "syntax_attr"
     private val syntaxAttrValue = "syntax_attr_value"
     private val syntaxComment = "syntax_comment"
@@ -134,6 +137,9 @@ class ColorHelper(
 
     fun setAccentColor(@ColorInt color: Int) =
         colorGroupAccent.forEach { setColor(it, color) }
+
+    fun setColorBetweenForeAndBackground(@ColorInt color: Int) =
+        colorGroupBetweenForeAndBackground.forEach { setColor(it, color) }
 
     fun setSyntaxColor(@ColorInt primary: Int, @ColorInt tertiary: Int) {
         setSyntaxAttrColor(primary.changeHue(40))
