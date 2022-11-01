@@ -9,6 +9,7 @@ import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.appcompat.view.ContextThemeWrapper
 import de.dertyp7214.mixplorerthemecreator.R
+import de.dertyp7214.mixplorerthemecreator.components.XMLEntry
 import de.dertyp7214.mixplorerthemecreator.components.XMLFile
 import de.dertyp7214.mixplorerthemecreator.core.changeHue
 import de.dertyp7214.mixplorerthemecreator.core.changeSaturation
@@ -104,7 +105,8 @@ class ColorHelper(
         "tint_folder",
         "tint_popup_controls_pressed",
         "tint_popup_icons",
-        "tint_progress_bar"
+        "tint_progress_bar",
+        "tint_icon_singns"
     )
 
     private val syntaxAttr = "syntax_attr"
@@ -196,6 +198,13 @@ class ColorHelper(
             String.format(
                 "#%06X",
                 0xFFFFFF and color
+            )
+        ) ?: themeUtils.properties.setValue(
+            XMLEntry(
+                name, String.format(
+                    "#%06X",
+                    0xFFFFFF and color
+                )
             )
         )
 
