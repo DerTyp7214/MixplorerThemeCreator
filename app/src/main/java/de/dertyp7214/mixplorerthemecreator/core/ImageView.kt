@@ -23,9 +23,9 @@ fun ImageView.setImageTint(@ColorInt color: Int, animated: Boolean = false) {
     } else imageTintList = ColorStateList.valueOf(color)
 }
 
-fun ImageView.setImage(bitmap: Bitmap, animated: Boolean = false) {
+fun ImageView.setImage(bitmap: Bitmap?, animated: Boolean = false) {
     val image = drawable
-    if (animated && image != null) {
+    if (animated && image != null && bitmap != null) {
         ValueAnimator.ofFloat(0f, 1f).apply {
             duration =
                 context.resources.getInteger(android.R.integer.config_mediumAnimTime).toLong()

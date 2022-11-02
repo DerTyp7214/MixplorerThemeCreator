@@ -3,10 +3,9 @@ package de.dertyp7214.mixplorerthemecreator.utils
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.Color
 import androidx.annotation.ColorInt
-import androidx.core.graphics.ColorUtils
 import androidx.fragment.app.FragmentActivity
+import de.dertyp7214.colorutilsc.ColorUtilsC
 import de.dertyp7214.mixplorerthemecreator.R
 import de.dertyp7214.mixplorerthemecreator.components.XMLFile
 import de.dertyp7214.mixplorerthemecreator.core.getResourceId
@@ -84,11 +83,12 @@ class ThemeUtils(private val activity: FragmentActivity) {
 
         val baseColor = colorHelper.getColor("tint_bar_main_icons")
         val accentColor = colorHelper.getColor("tint_folder")
+        val tertiaryColor = colorHelper.getColor("tint_grid_item")
 
         iconPath.listFiles { file -> file.extension == "png" }?.forEach { file ->
             try {
                 file.writeBitmap(
-                    tintDualColorImage(file.inputStream(), baseColor, accentColor),
+                    tintDualColorImage(file.inputStream(), baseColor, accentColor, tertiaryColor),
                     Bitmap.CompressFormat.PNG,
                     100
                 )
@@ -102,18 +102,20 @@ class ThemeUtils(private val activity: FragmentActivity) {
     fun iconPackPreview(colorHelper: ColorHelper, iconPack: IconPack): Bitmap {
         val baseColor = colorHelper.getColor("tint_bar_main_icons")
         val accentColor = colorHelper.getColor("tint_folder")
+        val tertiaryColor = colorHelper.getColor("tint_grid_item")
 
         return context.resources
             .openRawResource(context.getResourceId("${iconPack.rawName}_preview", "raw"))
             .use { input ->
-                tintDualColorImage(input, baseColor, accentColor)
+                tintDualColorImage(input, baseColor, accentColor, tertiaryColor)
             }
     }
 
     private fun tintDualColorImage(
         imageStream: InputStream,
         @ColorInt baseColor: Int,
-        @ColorInt accentColor: Int
+        @ColorInt accentColor: Int,
+        @ColorInt tertiaryColor: Int,
     ): Bitmap {
         val bitmap = BitmapFactory.decodeStream(imageStream).copy(Bitmap.Config.ARGB_8888, true)
 
@@ -124,13 +126,8 @@ class ThemeUtils(private val activity: FragmentActivity) {
         bitmap.getPixels(pixels, 0, width, 0, 0, width, height)
 
         pixels.forEachIndexed { index, pixel ->
-            val alpha = Color.alpha(pixel)
-            val maxAlphaPixel = ColorUtils.setAlphaComponent(pixel, 255)
-            pixels[index] = when (maxAlphaPixel) {
-                Color.RED -> ColorUtils.setAlphaComponent(baseColor, alpha)
-                Color.BLUE -> ColorUtils.setAlphaComponent(accentColor, alpha)
-                else -> pixel
-            }
+            pixels[index] =
+                ColorUtilsC.associateColors(pixel, baseColor, tertiaryColor, accentColor)
         }
 
         bitmap.setPixels(pixels, 0, width, 0, 0, width, height)
@@ -141,6 +138,7 @@ class ThemeUtils(private val activity: FragmentActivity) {
     enum class IconPack(val rawName: String) {
         DUAL("mixdual"),
         MONO("mixmono"),
+        FILLEDDUAL("filleddual"),
         FILLED("filled"),
         PAINTPRODUAL("paintprodual"),
         PAINTPRO("paintpro"),
