@@ -86,11 +86,14 @@ class ThemeUtils(private val activity: FragmentActivity) {
         val accentColor = colorHelper.getColor("tint_folder")
 
         iconPath.listFiles { file -> file.extension == "png" }?.forEach { file ->
-            file.writeBitmap(
-                tintDualColorImage(file.inputStream(), baseColor, accentColor),
-                Bitmap.CompressFormat.PNG,
-                100
-            )
+            try {
+                file.writeBitmap(
+                    tintDualColorImage(file.inputStream(), baseColor, accentColor),
+                    Bitmap.CompressFormat.PNG,
+                    100
+                )
+            } catch (_: Exception) {
+            }
         }
 
         return iconPath
@@ -138,6 +141,9 @@ class ThemeUtils(private val activity: FragmentActivity) {
     enum class IconPack(val rawName: String) {
         DUAL("mixdual"),
         MONO("mixmono"),
+        FILLED("filled"),
+        PAINTPRODUAL("paintprodual"),
+        PAINTPRO("paintpro"),
         THINNER("thinner");
     }
 }

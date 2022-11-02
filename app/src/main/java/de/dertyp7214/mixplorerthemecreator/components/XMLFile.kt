@@ -66,6 +66,9 @@ class XMLFile(
     val entries: List<XMLEntry>
         get() = values.values.toList()
 
+    val site: Int
+        get() = values.size
+
     fun toString(comment: String = ""): String {
         return "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n${comment.let { if (it.isNotEmpty()) "<!--DERTYP7214:$comment-->\n" else "" }}<properties>\n${
             values.joinToString("\n") { it.value[4] }
@@ -96,7 +99,8 @@ class XMLEntry(val key: String, _value: String) {
         return this
     }
 
-    operator fun get(indent: Int) = "${" " * indent}<entry key=\"$key\">${StringEscapeUtils.escapeXml11(value)}</entry>"
+    operator fun get(indent: Int) =
+        "${" " * indent}<entry key=\"$key\">${StringEscapeUtils.escapeXml11(value)}</entry>"
 
     override fun toString() = this[0]
 

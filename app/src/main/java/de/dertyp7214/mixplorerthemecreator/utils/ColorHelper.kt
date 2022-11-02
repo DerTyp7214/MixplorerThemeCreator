@@ -9,11 +9,13 @@ import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.appcompat.view.ContextThemeWrapper
 import de.dertyp7214.mixplorerthemecreator.R
+import de.dertyp7214.mixplorerthemecreator.components.ColorPickerBottomSheet
 import de.dertyp7214.mixplorerthemecreator.components.XMLEntry
 import de.dertyp7214.mixplorerthemecreator.components.XMLFile
 import de.dertyp7214.mixplorerthemecreator.core.changeHue
 import de.dertyp7214.mixplorerthemecreator.core.changeSaturation
 import de.dertyp7214.mixplorerthemecreator.core.getAttr
+import de.dertyp7214.mixplorerthemecreator.core.isColor
 
 @Suppress("unused", "MemberVisibilityCanBePrivate")
 class ColorHelper(
@@ -30,8 +32,6 @@ class ColorHelper(
         "bg_bar_tools",
         "bg_page",
         "bg_bar_tab",
-        "text_popup_primary",
-        "text_popup_secondary",
         "tint_divider_files",
         "tint_divider_popup_list",
         "tint_divider_settings",
@@ -44,6 +44,8 @@ class ColorHelper(
 
     private val colorGroupTextMain = listOf(
         "text_bar_main_primary",
+        "text_popup_primary",
+        "text_popup_secondary",
         "highlight_bar_action_buttons",
         "highlight_bar_main_buttons",
         "highlight_bar_tab_buttons",
@@ -69,6 +71,7 @@ class ColorHelper(
 
     private val colorGroupTextSecondary = listOf(
         "text_bar_main_secondary",
+        "text_bar_tab_default",
         "text_edit_selection_background",
         "text_filter_box_hint",
         "text_grid_secondary",
@@ -78,7 +81,6 @@ class ColorHelper(
     )
 
     private val colorGroupBackgroundVariant = listOf(
-        "text_bar_tab_default",
         "highlight_grid_item",
         "highlight_popup_list_item",
         "text_popup_primary_inverse",
@@ -119,6 +121,22 @@ class ColorHelper(
     private val syntaxSymbol = "syntax_symbol"
 
     private val lightStatusBar = "light_status_bar"
+
+    private val colorGroupMapping = mapOf(
+        "color_group_background" to colorGroupBackground,
+        "color_group_text_main" to colorGroupTextMain,
+        "color_group_text_secondary" to colorGroupTextSecondary,
+        "color_group_background_variant" to colorGroupBackgroundVariant,
+        "color_group_control" to colorGroupControl,
+        "color_group_accent" to colorGroupAccent,
+        "color_group_between_fore_and_background" to colorGroupBetweenForeAndBackground,
+        "syntax_attr" to listOf(syntaxAttr),
+        "syntax_attr_value" to listOf(syntaxAttrValue),
+        "syntax_comment" to listOf(syntaxComment),
+        "syntax_keyword" to listOf(syntaxKeyword),
+        "syntax_string" to listOf(syntaxString),
+        "syntax_symbol" to listOf(syntaxSymbol)
+    )
 
     fun setBackgroundColor(@ColorInt color: Int) =
         colorGroupBackground.forEach { setColor(it, color) }
@@ -215,6 +233,19 @@ class ColorHelper(
                 )
             )
         )
+
+    fun getColors(filter: String = "") =
+        themeUtils.properties.filter { it.key.contains(filter, true) && isColor(it.value) }
+
+    fun setGroupColor(key: String, @ColorInt color: Int) =
+        colorGroupMapping[key]?.forEach { setColor(it, color) }
+
+    fun getGroupColor(key: String, @ColorInt default: Int = Color.RED) =
+        colorGroupMapping[key]?.first()?.let { getColor(it, default) } ?: default
+
+    fun getColorGroups() = colorGroupMapping.map {
+        ColorPickerBottomSheet.ColorEntry(it.key, getColor(it.value.first()))
+    }
 
     fun iconPackPreview(iconPack: ThemeUtils.IconPack) = themeUtils.iconPackPreview(this, iconPack)
 

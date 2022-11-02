@@ -2,12 +2,12 @@
 <androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/recyclerViewIconPacks"
+    android:id="@+id/recyclerViewColorPicker"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:requiresFadingEdge="vertical"
-    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
     tools:itemCount="15"
-    tools:listitem="@layout/icon_pack_item">
+    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+    tools:listitem="@layout/color_preview">
 
 </androidx.recyclerview.widget.RecyclerView>

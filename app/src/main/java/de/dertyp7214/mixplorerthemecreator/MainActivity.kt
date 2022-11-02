@@ -6,6 +6,8 @@ import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.view.WindowInsets
 import android.view.inputmethod.EditorInfo
@@ -22,6 +24,7 @@ import androidx.core.widget.doAfterTextChanged
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.button.MaterialButton
+import de.dertyp7214.mixplorerthemecreator.components.ColorPickerBottomSheet
 import de.dertyp7214.mixplorerthemecreator.components.IconPackBottomSheet
 import de.dertyp7214.mixplorerthemecreator.components.IconPreviewAdapter
 import de.dertyp7214.mixplorerthemecreator.components.SectionsPagerAdapter
@@ -30,7 +33,6 @@ import de.dertyp7214.mixplorerthemecreator.core.changeSaturation
 import de.dertyp7214.mixplorerthemecreator.core.colorPrimary
 import de.dertyp7214.mixplorerthemecreator.core.colorSurface
 import de.dertyp7214.mixplorerthemecreator.core.getAttr
-import de.dertyp7214.mixplorerthemecreator.core.isLightTheme
 import de.dertyp7214.mixplorerthemecreator.core.setBackground
 import de.dertyp7214.mixplorerthemecreator.core.setCardBackgroundColor
 import de.dertyp7214.mixplorerthemecreator.core.setIconTint
@@ -48,6 +50,8 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         private val icons = ArrayList<Pair<String, Bitmap>>()
+
+        private var iconPack: ThemeUtils.IconPack = ThemeUtils.IconPack.DUAL
     }
 
     private val previewCard by lazy { findViewById<CardView>(R.id.previewCard) }
@@ -69,6 +73,8 @@ class MainActivity : AppCompatActivity() {
     private val cardIconPack by lazy { findViewById<CardView>(R.id.cardIconPack) }
     private val imgIconPack by lazy { findViewById<ImageView>(R.id.imgIconPack) }
 
+    private val colorPicker by lazy { findViewById<ViewGroup>(R.id.colorPicker) }
+
     private val adapter by lazy { SectionsPagerAdapter(viewPager, dots, pages) }
 
     private val pages by lazy {
@@ -87,7 +93,13 @@ class MainActivity : AppCompatActivity() {
     private val iconPackBottomSheet by lazy {
         IconPackBottomSheet(colorHelper) {
             iconPack = it
-            setColor()
+            updateColors()
+        }
+    }
+
+    private val colorPickerBottomSheet by lazy {
+        ColorPickerBottomSheet(colorHelper) {
+            updateColors()
         }
     }
 
@@ -100,14 +112,15 @@ class MainActivity : AppCompatActivity() {
         imgIconPack.setImage(themeUtils.iconPackPreview(colorHelper, iconPack), true)
     })
 
-    private var iconPack: ThemeUtils.IconPack = ThemeUtils.IconPack.DUAL
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         viewPager.offscreenPageLimit = 3
         viewPager.adapter = adapter
+
+        colorPicker.visibility = if (switchMonet.isChecked) GONE else VISIBLE
+        switchTertiary.visibility = if (switchMonet.isChecked) VISIBLE else GONE
 
         editTextName.doAfterTextChanged {
             it?.toString()?.let { title -> themeUtils.set("title", title) }
@@ -134,7 +147,10 @@ class MainActivity : AppCompatActivity() {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         }
 
-        switchMonet.setOnCheckedChangeListener { _, _ ->
+        switchMonet.setOnCheckedChangeListener { _, isChecked ->
+            colorPicker.visibility = if (isChecked) GONE else VISIBLE
+            switchTertiary.visibility = if (isChecked) VISIBLE else GONE
+
             setColor()
         }
 
@@ -144,6 +160,10 @@ class MainActivity : AppCompatActivity() {
 
         cardIconPack.setOnClickListener {
             iconPackBottomSheet.show(this)
+        }
+
+        colorPicker.setOnClickListener {
+            colorPickerBottomSheet.show(this)
         }
 
         btnShare.setOnClickListener {
@@ -282,11 +302,11 @@ class MainActivity : AppCompatActivity() {
             colorHelper.setBackgroundColorVariant(getAttr(com.google.android.material.R.attr.colorSurfaceVariant))
             colorHelper.setControlColor(
                 if (switchTertiary.isChecked) getAttr(com.google.android.material.R.attr.colorTertiaryContainer).changeSaturation(
-                        .7f
-                    )
+                    .7f
+                )
                 else getAttr(com.google.android.material.R.attr.colorPrimaryContainer).changeSaturation(
-                        .7f
-                    )
+                    .7f
+                )
             )
             colorHelper.setSyntaxColor(
                 colorPrimary.changeSaturation(1.5f),
@@ -300,8 +320,13 @@ class MainActivity : AppCompatActivity() {
                 )
             )
             colorHelper.setTextColorSecondary(getAttr(com.google.android.material.R.attr.colorOnSecondaryContainer))
-            colorHelper.setLightStatusBar(isLightTheme)
         } else colorHelper.resetColors()
+
+        updateColors()
+    }
+
+    private fun updateColors() {
+        colorHelper.setLightStatusBar(ColorUtils.calculateLuminance(colorHelper.getColor("tint_status_bar")) > .5)
 
         colorChangeListeners.forEach { it() }
     }

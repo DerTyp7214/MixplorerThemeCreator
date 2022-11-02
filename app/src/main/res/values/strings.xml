@@ -27,4 +27,10 @@
     <string name="share_theme">Share Theme</string>
     <string name="name">Name</string>
     <string name="iconPack">Icon pack</string>
+    <string name="colorPicker">Color Picker</string>
+    <string name="change_colors">Change Colors</string>
+    <string name="pickColor">Pick Color</string>
+    <string name="hex">Hex</string>
+    <string name="pick">Pick</string>
+    <string name="cancel">Cancel</string>
 </resources>
