@@ -39,7 +39,7 @@ class IconPreviewAdapter(
         val (iconName, icon) = icons[position]
 
         holder.text.text = iconName
-        holder.icon.setImage(icon, true)
+        holder.icon.setImage(icon)
 
         fun changeColors() {
             val tintBarMainIcons = colorHelper.getColor("tint_bar_main_icons")

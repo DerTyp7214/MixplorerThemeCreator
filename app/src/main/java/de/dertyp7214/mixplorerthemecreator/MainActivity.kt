@@ -46,6 +46,10 @@ import kotlin.math.roundToInt
 
 class MainActivity : AppCompatActivity() {
 
+    companion object {
+        private val icons = ArrayList<Pair<String, Bitmap>>()
+    }
+
     private val previewCard by lazy { findViewById<CardView>(R.id.previewCard) }
     private val viewPager by lazy { findViewById<ViewPager>(R.id.viewPager) }
     private val dots by lazy { findViewById<ViewGroup>(R.id.dots) }
@@ -226,7 +230,6 @@ class MainActivity : AppCompatActivity() {
 
     @SuppressLint("NotifyDataSetChanged")
     private val iconsPreview: View.() -> Unit = {
-        val icons = ArrayList<Pair<String, Bitmap>>()
         val adapter = IconPreviewAdapter(this@MainActivity, colorHelper, icons)
 
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)

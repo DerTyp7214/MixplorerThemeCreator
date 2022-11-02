@@ -5,6 +5,7 @@ import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.widget.ImageView
 import androidx.annotation.ColorInt
+import androidx.core.animation.doOnEnd
 import androidx.core.graphics.drawable.toDrawable
 
 fun ImageView.setImageTint(@ColorInt color: Int, animated: Boolean = false) {
@@ -35,6 +36,9 @@ fun ImageView.setImage(bitmap: Bitmap, animated: Boolean = false) {
                         it.animatedValue as Float
                     )
                 )
+            }
+            doOnEnd {
+                setImageBitmap(bitmap)
             }
         }.start()
     } else setImageBitmap(bitmap)
