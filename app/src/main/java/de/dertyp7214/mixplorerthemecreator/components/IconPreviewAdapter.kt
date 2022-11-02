@@ -10,6 +10,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import de.dertyp7214.mixplorerthemecreator.R
+import de.dertyp7214.mixplorerthemecreator.core.setImage
 import de.dertyp7214.mixplorerthemecreator.core.setRippleColor
 import de.dertyp7214.mixplorerthemecreator.core.setTextColor
 import de.dertyp7214.mixplorerthemecreator.utils.ColorHelper
@@ -38,7 +39,7 @@ class IconPreviewAdapter(
         val (iconName, icon) = icons[position]
 
         holder.text.text = iconName
-        holder.icon.setImageBitmap(icon)
+        holder.icon.setImage(icon, true)
 
         fun changeColors() {
             val tintBarMainIcons = colorHelper.getColor("tint_bar_main_icons")

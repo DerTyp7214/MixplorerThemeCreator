@@ -34,6 +34,7 @@ import de.dertyp7214.mixplorerthemecreator.core.isLightTheme
 import de.dertyp7214.mixplorerthemecreator.core.setBackground
 import de.dertyp7214.mixplorerthemecreator.core.setCardBackgroundColor
 import de.dertyp7214.mixplorerthemecreator.core.setIconTint
+import de.dertyp7214.mixplorerthemecreator.core.setImage
 import de.dertyp7214.mixplorerthemecreator.core.setTextColor
 import de.dertyp7214.mixplorerthemecreator.utils.ColorHelper
 import de.dertyp7214.mixplorerthemecreator.utils.FileUtils
@@ -92,7 +93,7 @@ class MainActivity : AppCompatActivity() {
         editTextName.setText(themeUtils.get("title"))
 
         textIconPack.text = iconPack.rawName.capitalize()
-        imgIconPack.setImageBitmap(themeUtils.iconPackPreview(colorHelper, iconPack))
+        imgIconPack.setImage(themeUtils.iconPackPreview(colorHelper, iconPack), true)
     })
 
     private var iconPack: ThemeUtils.IconPack = ThemeUtils.IconPack.DUAL
@@ -112,8 +113,9 @@ class MainActivity : AppCompatActivity() {
             when (actionId) {
                 EditorInfo.IME_ACTION_DONE -> {
                     editTextName.clearFocus()
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
-                        editTextName.windowInsetsController?.hide(WindowInsets.Type.ime())
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) editTextName.windowInsetsController?.hide(
+                        WindowInsets.Type.ime()
+                    )
                     true
                 }
 
@@ -210,8 +212,7 @@ class MainActivity : AppCompatActivity() {
                     it.setTextColor(buttonTextColor, true)
                     it.setBackground(
                         ColorUtils.setAlphaComponent(
-                            buttonTextColor,
-                            (255 * .2f).roundToInt()
+                            buttonTextColor, (255 * .2f).roundToInt()
                         ), true
                     )
                 } else it.setIconTint(buttonTextColor, true)
@@ -250,8 +251,7 @@ class MainActivity : AppCompatActivity() {
                 }?.forEach { file ->
                     val bitmap = BitmapFactory.decodeFile(file.absolutePath)
                     val name =
-                        file.nameWithoutExtension.split("_")
-                            .joinToString(" ") { it.capitalize() }
+                        file.nameWithoutExtension.split("_").joinToString(" ") { it.capitalize() }
 
                     tmp.add(Pair(name, bitmap))
                 }
@@ -278,10 +278,12 @@ class MainActivity : AppCompatActivity() {
             colorHelper.setBackgroundColor(colorSurface)
             colorHelper.setBackgroundColorVariant(getAttr(com.google.android.material.R.attr.colorSurfaceVariant))
             colorHelper.setControlColor(
-                if (switchTertiary.isChecked) getAttr(com.google.android.material.R.attr.colorTertiaryContainer)
-                    .changeSaturation(.7f)
-                else getAttr(com.google.android.material.R.attr.colorPrimaryContainer)
-                    .changeSaturation(.7f)
+                if (switchTertiary.isChecked) getAttr(com.google.android.material.R.attr.colorTertiaryContainer).changeSaturation(
+                        .7f
+                    )
+                else getAttr(com.google.android.material.R.attr.colorPrimaryContainer).changeSaturation(
+                        .7f
+                    )
             )
             colorHelper.setSyntaxColor(
                 colorPrimary.changeSaturation(1.5f),
