@@ -83,7 +83,7 @@ jobs:
           echo "::set-output name=json::$content"
       - name: Sign artifact
         id: signArtifact
-        uses: r0adkll/sign-android-release@v1
+        uses: ilharp/sign-android-release@v1
         with:
           releaseDirectory: app/build/outputs/apk/debug
           alias: ${{ secrets.KEYALIAS }}

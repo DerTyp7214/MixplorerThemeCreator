@@ -56,7 +56,7 @@ jobs:
 
       - name: Sign artifact
         id: signArtifact
-        uses: r0adkll/sign-android-release@v1
+        uses: ilharp/sign-android-release@v1
         with:
           releaseDirectory: app/build/outputs/bundle/release
           alias: ${{ secrets.KEYALIAS }}
