@@ -87,7 +87,7 @@ jobs:
         with:
           releaseDir: app/build/outputs/apk/debug
           keyAlias: ${{ secrets.KEYALIAS }}
-          signingKeyBase64: ${{ secrets.SIGNING_KEY }}
+          signingKey: ${{ secrets.SIGNING_KEY }}
           keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
           keyPassword: ${{ secrets.KEY_PASSWORD }}
           buildToolsVersion: 33.0.0
