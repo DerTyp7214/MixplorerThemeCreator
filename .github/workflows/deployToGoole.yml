@@ -58,7 +58,7 @@ jobs:
         id: signArtifact
         uses: ilharp/sign-android-release@v1
         with:
-          releaseDir: app/build/outputs/apk/release
+          releaseDir: app/build/outputs/bundle/release
           keyAlias: ${{ secrets.KEYALIAS }}
           signingKey: ${{ secrets.SIGNING_KEY }}
           keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
