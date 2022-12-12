@@ -71,12 +71,12 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           gradle-version: wrapper
-          arguments: assembleDebug
+          arguments: assembleRelease
 
       - name: Get JSON
         id: metadataJson
         run: |
-          content=`cat app/build/outputs/apk/debug/output-metadata.json`
+          content=`cat app/build/outputs/apk/release/output-metadata.json`
           content="${content//'%'/'%25'}"
           content="${content//$'\n'/'%0A'}"
           content="${content//$'\r'/'%0D'}"
@@ -86,45 +86,45 @@ jobs:
         id: signArtifact
         uses: ilharp/sign-android-release@v1
         with:
-          releaseDir: app/build/outputs/apk/debug
+          releaseDir: app/build/outputs/apk/release
           keyAlias: ${{ secrets.KEYALIAS }}
           signingKey: ${{ secrets.SIGNING_KEY }}
           keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
           keyPassword: ${{ secrets.KEY_PASSWORD }}
           buildToolsVersion: 33.0.0
 
-      - name: Delete old APK
-        run: rm app/build/outputs/apk/debug/app-debug.apk
+      - name: List files
+        run: ls app/build/outputs/apk/release
 
       - name: Rename APK
-        run: mv app/build/outputs/apk/debug/app-debug-signed.apk app/build/outputs/apk/debug/app-debug.apk
+        run: mv app/build/outputs/apk/release/app-release-unsigned-signed.apk app/build/outputs/apk/release/app-release.apk
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
         with:
           name: Debug Artifact
-          path: app/build/outputs/apk/debug/app-debug.apk
+          path: app/build/outputs/apk/release/app-release.apk
 
       - name: Create new Release
         id: create_release
         uses: marvinpinto/action-automatic-releases@latest
         with:
-          repo_token: ${{ secrets.GH_TOKEN }}
-          automatic_release_tag: ${{ fromJson(steps.metadataJson.outputs.json).elements[0].versionName }}-debug
-          prerelease: true
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          automatic_release_tag: ${{ fromJson(steps.metadataJson.outputs.json).elements[0].versionName }}
+          prerelease: false
           title: Mixplorer Theme Creator ${{ fromJson(steps.metadataJson.outputs.json).elements[0].versionName }}
           files: |
-            app/build/outputs/apk/debug/app-debug.apk
-            app/build/outputs/apk/debug/output-metadata.json
+            app/build/outputs/apk/release/app-release.apk
+            app/build/outputs/apk/release/output-metadata.json
 
       - name: Create new Release
         id: create_latest_release
         uses: marvinpinto/action-automatic-releases@latest
         with:
-          repo_token: ${{ secrets.GH_TOKEN }}
-          automatic_release_tag: latest-debug
-          prerelease: true
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          automatic_release_tag: latest
+          prerelease: false
           title: Mixplorer Theme Creator ${{ fromJson(steps.metadataJson.outputs.json).elements[0].versionName }}
           files: |
-            app/build/outputs/apk/debug/app-debug.apk
-            app/build/outputs/apk/debug/output-metadata.json
+            app/build/outputs/apk/release/app-release.apk
+            app/build/outputs/apk/release/output-metadata.json
